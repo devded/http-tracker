@@ -1,27 +1,25 @@
 {
   "author": "Dedar Alam",
   "background": {
-    "scripts": [
-      "/src/js/httpTrackerConstants.js",
-      "/src/js/httpTrackerUtils.js",
-      "/src/js/httpTrackerOpen.js"
-    ]
+    "service_worker": "src/js/httpTrackerServiceWorker.js"
   },
   "description": "Fork of original HTTP-TRACKER. Inspect HTTP request headers, cookies, data, Response Headers, Body, cookies and add/modify request headers before sending requests",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "HTTP TRACKER PLUS",
   "permissions": [
     "storage",
     "webRequest",
-    "<all_urls>",
-    "webRequestBlocking",
     "tabs",
     "cookies",
-    "debugger"
+    "debugger",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback"
   ],
-  "version": "2.2.6",
-  "browser_action": {
-    "browser_style": true,
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "version": "3.0.0",
+  "action": {
     "default_icon": {
       "16": "/src/assets/icon_320px.png",
       "32": "/src/assets/icon_320px.png"
@@ -29,7 +27,7 @@
     "default_title": "HTTP TRACKER PLUS : Inspect HTTP request headers, cookies, data, Response Headers, Body, cookies and add/modify request headers before sending requests"
   },
   "commands": {
-    "_execute_browser_action": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+1"
       },

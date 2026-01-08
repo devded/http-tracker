@@ -1,6 +1,9 @@
+// Use globalThis for compatibility with both Service Workers and DOM contexts
 const httpTracker = {
-  browser: window.browser || window.chrome,
-  isFF: window.browser ? true : false,
+  browser: (typeof globalThis !== 'undefined' && (globalThis.browser || globalThis.chrome)) ||
+    (typeof self !== 'undefined' && (self.browser || self.chrome)) ||
+    (typeof chrome !== 'undefined' && chrome),
+  isFF: typeof browser !== 'undefined',
   PAGE_PATH: '/src/html/http-tracker.html',
   STORAGE_KEY_EXCLUDE_PATTERN: 'httpTrackerGlobalExcludePatterns',
   STORAGE_KEY_INCLUDE_PATTERN: 'httpTracker_GlobalIncludePatterns',

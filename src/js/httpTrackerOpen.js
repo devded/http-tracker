@@ -2,11 +2,15 @@ const bringToFront = {
   focused: true,
 };
 
-const createWindowProperties = {
-  type: 'popup',
-  url: httpTracker.browser.extension.getURL(httpTracker.PAGE_PATH),
-  state: httpTracker.isFF ? 'maximized' : 'normal',
-};
+// MV3: Use runtime.getURL instead of deprecated extension.getURL
+// Also make this a function since we can't call runtime.getURL at module load time in Service Worker
+function getCreateWindowProperties() {
+  return {
+    type: 'popup',
+    url: httpTracker.browser.runtime.getURL(httpTracker.PAGE_PATH),
+    state: httpTracker.isFF ? 'maximized' : 'normal',
+  };
+}
 
 // open the addon options window, or if already opened, bring to front preventing multiple windows
 function openAddonOptions() {
@@ -28,12 +32,12 @@ function getAddonOptions(details) {
     httpTracker.browser.tabs.query({
       'windowId': existingWindow.id,
       'url': httpTracker.browser.runtime.getURL('/src/html/options.html'),
-    }, function(tabs) {
+    }, function (tabs) {
       if (tabs && tabs.length == 1) {
         httpTracker.browser.windows.update(
-            existingWindow.id, {
-              focused: true,
-            },
+          existingWindow.id, {
+          focused: true,
+        },
         );
         httpTracker.browser.tabs.update(tabs[0].id, {
           active: true,
@@ -53,7 +57,7 @@ function openAddon() {
 }
 
 function getAddonWindow(details) {
-  httpTracker.browser.storage.sync.get([httpTracker.STORAGE_KEY_OPEN_ADDON_IN_TAB], function(cbResponseParams) {
+  httpTracker.browser.storage.sync.get([httpTracker.STORAGE_KEY_OPEN_ADDON_IN_TAB], function (cbResponseParams) {
     const value = getPropertyFromStorage(cbResponseParams, httpTracker.STORAGE_KEY_OPEN_ADDON_IN_TAB);
     if (value === undefined) {
       setPropertyToStorage(httpTracker.STORAGE_KEY_OPEN_ADDON_IN_TAB, false);
@@ -72,12 +76,12 @@ function openInTab(details) {
     httpTracker.browser.tabs.query({
       'windowId': existingWindow.id,
       'url': httpTracker.browser.runtime.getURL(httpTracker.PAGE_PATH),
-    }, function(tabs) {
+    }, function (tabs) {
       if (tabs && tabs.length == 1) {
         httpTracker.browser.windows.update(
-            existingWindow.id, {
-              focused: true,
-            },
+          existingWindow.id, {
+          focused: true,
+        },
         );
         httpTracker.browser.tabs.update(tabs[0].id, {
           active: true,
@@ -108,7 +112,7 @@ function openInPopWindow(details) {
   if (existingWindow) {
     httpTracker.browser.windows.get(existingWindow.id, focusExistingWindow);
   } else {
-    httpTracker.browser.windows.create(createWindowProperties);
+    httpTracker.browser.windows.create(getCreateWindowProperties());
   }
 }
 
@@ -122,8 +126,9 @@ function focusExistingWindow(addOnWindowDetails) {
   }
 }
 
-httpTracker.browser.browserAction.setTitle({
+// MV3: Use action API instead of browserAction
+httpTracker.browser.action.setTitle({
   'title': getManifestDetails().title,
 });
 
-httpTracker.browser.browserAction.onClicked.addListener(openAddon);
+httpTracker.browser.action.onClicked.addListener(openAddon);

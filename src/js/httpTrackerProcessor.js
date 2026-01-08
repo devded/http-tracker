@@ -824,6 +824,10 @@ const eventTracker = (function () {
       }
     });
     setRequestHeadersList(headersObject);
+    // MV3: Update DNR header modification rules
+    if (typeof httpTrackerDNR !== 'undefined') {
+      httpTrackerDNR.updateHeaderModificationRules(headersObject, includeURLsList, excludeURLsList);
+    }
     if (headersObject.length || conatiners.length) {
       getById('add_modify_headers_banner').innerHTML = `Add/Modify request headers: ${headersObject.length}`;
     } else {
@@ -1108,6 +1112,10 @@ const eventTracker = (function () {
     }
     setPatternsToBlockTimeout = setTimeout(function () {
       blockURLSList = stringToArray(event.target.value);
+      // MV3: Update DNR blocking rules
+      if (typeof httpTrackerDNR !== 'undefined') {
+        httpTrackerDNR.updateBlockingRules(blockURLSList);
+      }
     }, inputBoxDelay);
   }
 
@@ -1130,6 +1138,10 @@ const eventTracker = (function () {
     maskedAttributesList = stringToArray(getById('mask_patterns_list').value);
     maskAttributesCheckboxValue = getById('enable_mask_patterns').checked;
     blockURLSList = stringToArray(getById('block_urls_pattern').value);
+    // MV3: Initialize DNR blocking rules on page load
+    if (typeof httpTrackerDNR !== 'undefined' && blockURLSList && blockURLSList.length > 0) {
+      httpTrackerDNR.updateBlockingRules(blockURLSList);
+    }
     updateAllButtons();
     hideOrShowURLList();
     hideOrShowInfoIcons();

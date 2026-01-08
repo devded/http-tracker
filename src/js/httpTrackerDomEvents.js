@@ -1,10 +1,17 @@
+/**
+ * HTTP Tracker Plus - DOM Events (MV3 Compatible)
+ * 
+ * WebRequest listeners for LOGGING purposes only.
+ * Blocking/modification is now handled by declarativeNetRequest (httpTrackerDNR.js)
+ */
+
 const trackUrls = {
   urls: ['<all_urls>'],
 };
 
+// MV3: Non-blocking listener options only
 const reqBodyHeaders = httpTracker.isFF ? ['requestBody'] : ['requestBody', 'extraHeaders'];
 const reqHeaders = httpTracker.isFF ? ['requestHeaders'] : ['requestHeaders', 'extraHeaders'];
-const reqHeadersBlocking = httpTracker.isFF ? ['blocking', 'requestHeaders'] : ['blocking', 'requestHeaders', 'extraHeaders'];
 const resHeaders = httpTracker.isFF ? ['responseHeaders'] : ['responseHeaders', 'extraHeaders'];
 const errorHeaders = ['extraHeaders'];
 const r = httpTracker.browser.webRequest;
@@ -17,21 +24,14 @@ r.onBeforeRequest.addListener(
   }, trackUrls, reqBodyHeaders,
 );
 
+// MV3: Removed blocking - now only logging
 r.onBeforeSendHeaders.addListener(
   function (details) {
     details.callerName = 'onBeforeSendHeaders';
     details.requestIdEnhanced = details.requestId;
-    addModifyRequestHeaders(details);
+    // Note: Header modification is now handled by DNR, just log here
     eventTracker.logRequestDetails(details);
-    if (blockRequests(details)) {
-      return {
-        cancel: true,
-      };
-    }
-    return {
-      requestHeaders: details.requestHeaders,
-    };
-  }, trackUrls, reqHeadersBlocking,
+  }, trackUrls, reqHeaders,
 );
 
 r.onSendHeaders.addListener(

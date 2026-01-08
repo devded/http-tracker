@@ -74,7 +74,7 @@ function sortMapByKey(unsortedMap) {
    *
 */
 function sortJsonByProperty(jsonObjectArray, property) {
-  const sortedObject = jsonObjectArray.sort(function(a, b) {
+  const sortedObject = jsonObjectArray.sort(function (a, b) {
     return a[property].localeCompare(b[property]);
   });
   return sortedObject;
@@ -101,7 +101,9 @@ function getManifestDetails() {
     const manifest = httpTracker.browser.runtime.getManifest();
     if (manifest) {
       customManifestDetails = {};
-      customManifestDetails.title = `${manifest.browser_action.default_title} (version : ${manifest.version})`;
+      // MV3: Use action instead of browser_action
+      const actionConfig = manifest.action || manifest.browser_action;
+      customManifestDetails.title = `${actionConfig.default_title} (version : ${manifest.version})`;
     }
   }
   return customManifestDetails;
@@ -170,7 +172,7 @@ function setPropertyToStorage(key, value) {
   // console.log(`saving values into storage for ${key} = ${value}`);
   httpTracker.browser.storage.sync.set({
     [key]: value,
-  }, function() {
+  }, function () {
     // nothing to do after successful storing
     // console.log(`Successfully stored ${key} = ${value}`);
   });
