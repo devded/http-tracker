@@ -1,5 +1,5 @@
 {
-    "name": "http-tracker",
+    "name": "http-tracker-plus",
     "description": "",
     "version": "1.0.0",
     "repository": {
@@ -7,7 +7,7 @@
         "url": ""
     },
     "keywords": [],
-    "author": "Venu Madhav",
+    "author": "Dedar Alam",
     "license": "MIT",
     "bugs": {
         "url": ""

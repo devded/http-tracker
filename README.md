@@ -1,9 +1,9 @@
-<div align="center">HTTP-TRACKER</div>
+<div align="center">HTTP TRACKER PLUS</div>
 <br/><br/>
 
-# What is HTTP-TRACKER?
+# What is HTTP TRACKER PLUS?
 
-HTTP-TRACKER is a browser extension which tracks the network on the browser (chrome and firefox). What ever is captured on the network tab in a browser, the same and more can be done by this extension. This provides a centralized window which displays the entire requests - responses from all the tabs and all windows of the browser. This can also track the private/incognito window tabs (if permission is enabled), bringing everything into a central place.
+HTTP TRACKER PLUS is a browser extension which tracks the network on the browser (chrome and firefox). What ever is captured on the network tab in a browser, the same and more can be done by this extension. This provides a centralized window which displays the entire requests - responses from all the tabs and all windows of the browser. This can also track the private/incognito window tabs (if permission is enabled), bringing everything into a central place.
 <br/><br/>
 
 # Features
@@ -50,7 +50,7 @@ HTTP-TRACKER is a browser extension which tracks the network on the browser (chr
 
 * Optimize response cookies to ease the life of the user by resolving the final value of cookies when duplicate cookies exist in the response - user has to enable this option
 
-* Pause the http-tracker without closing the extension when capturing of required data is done to hold the data for reference
+* Pause the HTTP TRACKER PLUS without closing the extension when capturing of required data is done to hold the data for reference
 
 * Delete all the entire captured data
 
@@ -64,7 +64,13 @@ HTTP-TRACKER is a browser extension which tracks the network on the browser (chr
 
 # Install
 
-* firefox: https://addons.mozilla.org/en-US/firefox/addon/http-tracker/
+* Manual Installation: This project must be installed manually.
+* Chrome: Go to `chrome://extensions`, enable Developer Mode, and select "Load Unpacked".
+* Firefox: Go to `about:debugging`, select "This Firefox", and click "Load Temporary Add-on".
 
-* chrome: https://chrome.google.com/webstore/detail/http-tracker/fklakbbaaknbgcedidhblbnhclijnhbi?hl=en&authuser=0
 
+# Author
+
+Dedar Alam
+
+_This project is a fork of the original HTTP-TRACKER._
