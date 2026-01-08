@@ -1,3 +1,118 @@
+:root {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+  --border-color: #1f2937;
+}
+
+.light-mode {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --border-color: #e5e7eb;
+}
+
+/* Theme Overrides for Tailwind classes */
+.light-mode body,
+.light-mode .bg-gray-900 {
+  background-color: var(--bg-primary) !important;
+}
+
+.light-mode .text-gray-200,
+.light-mode .text-white {
+  color: var(--text-main) !important;
+}
+
+.light-mode .text-gray-400,
+.light-mode .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
+.light-mode .border-gray-800,
+.light-mode .border-gray-700 {
+  border-color: var(--border-color) !important;
+}
+
+.light-mode .bg-gray-800 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.light-mode .hover\:bg-gray-800:hover,
+.light-mode .hover\:bg-gray-700:hover {
+  background-color: var(--bg-secondary) !important;
+}
+
+.light-mode .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.light-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.light-mode .headers-container {
+  background: rgba(243, 244, 246, 0.5) !important;
+}
+
+.light-mode .header-key {
+  color: #4b5563 !important;
+}
+
+.light-mode .header-value {
+  color: #111827 !important;
+}
+
+.light-mode .json-viewer,
+.light-mode .body-preview {
+  background: #f9fafb !important;
+  border-color: #e5e7eb !important;
+  color: #111827 !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Badge and Color overrides for Light Mode */
+.light-mode .bg-red-900.bg-opacity-20 {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+.light-mode .bg-yellow-900.bg-opacity-20 {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+}
+
+.light-mode .bg-green-900.bg-opacity-20 {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+.light-mode .bg-blue-600.bg-opacity-20 {
+  background-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-mode .text-red-400 {
+  color: #b91c1c !important;
+}
+
+.light-mode .text-yellow-400 {
+  color: #b45309 !important;
+}
+
+.light-mode .text-green-400 {
+  color: #047857 !important;
+}
+
+.light-mode .text-blue-400 {
+  color: #1d4ed8 !important;
+}
+
+.light-mode .text-gray-300 {
+  color: #374151 !important;
+}
+
+.hidden {
+  display: none !important;
+}
+
 .web_event_tracker {
   margin: 2% 2% 2% 2%;
   height: 100%;

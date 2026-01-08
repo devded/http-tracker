@@ -89,6 +89,18 @@
             clip-rule="evenodd" />
         </svg>
       </button>
+      <button id="theme_toggle" class="p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 transition-colors"
+        title="Toggle Light/Dark Mode">
+        <svg id="sun_icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 20 20"
+          fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+            clip-rule="evenodd" />
+        </svg>
+        <svg id="moon_icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+        </svg>
+      </button>
       <button id="preferences" class="p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 transition-colors"
         title="Settings">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -159,19 +171,19 @@
         <span
           class="absolute left-3 z-10 w-14 text-[10px] font-bold text-blue-500 uppercase tracking-wider pointer-events-none">Track</span>
         <input id="track_urls_pattern" type="text" placeholder="URL patterns to include..."
-          class="bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-14 pr-3 text-sm w-full focus:border-blue-500 outline-none transition-all placeholder-gray-600" />
+          class="bg-gray-800 border border-gray-700 rounded-lg py-3.5 pl-20 pr-3 text-sm w-full focus:border-blue-500 outline-none transition-all placeholder-gray-600" />
       </div>
       <div class="relative flex items-center">
         <span
           class="absolute left-3 z-10 w-14 text-[10px] font-bold text-yellow-500 uppercase tracking-wider pointer-events-none">Skip</span>
         <input id="exclude_urls_pattern" type="text" placeholder="URL patterns to ignore..."
-          class="bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-14 pr-3 text-sm w-full focus:border-yellow-500 outline-none transition-all placeholder-gray-600" />
+          class="bg-gray-800 border border-gray-700 rounded-lg py-3.5 pl-20 pr-3 text-sm w-full focus:border-yellow-500 outline-none transition-all placeholder-gray-600" />
       </div>
       <div class="relative flex items-center">
         <span
           class="absolute left-3 z-10 w-14 text-[10px] font-bold text-red-500 uppercase tracking-wider pointer-events-none">Block</span>
         <input id="block_urls_pattern" type="text" placeholder="URL patterns to block..."
-          class="bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-14 pr-3 text-sm w-full focus:border-red-500 outline-none transition-all placeholder-gray-600" />
+          class="bg-gray-800 border border-gray-700 rounded-lg py-3.5 pl-20 pr-3 text-sm w-full focus:border-red-500 outline-none transition-all placeholder-gray-600" />
       </div>
     </div>
   </div>
