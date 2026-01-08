@@ -1,42 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
+  <title>HTTP TRACKER PLUS - Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="/src/js/tailwindcss.min.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    textarea:focus,
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+  </style>
 </head>
 
-<body>
-  <div id="persist_options" style="margin: 2% 2% 2% 2%; height: 100%; font-size: 100%; border:dashed;">
-    <div style="float: left; width: 30%; height:50px;">Open addon window in (change takes effect on restart of addon
-      window)</div>
-    <div style="height:50px;">
-      <label style="padding-left: 20px;">
-        <input type="radio" name="uipage" value="true" id="tab">tab
-      </label>
-      <label style="padding-left: 20px;">
-        <input type="radio" name="uipage" value="false" id="popup">popup
-      </label>
+<body class="bg-gray-900 text-gray-200 min-h-screen">
+  <!-- Header -->
+  <header class="bg-gray-900 border-b border-gray-800 p-6">
+    <div class="max-w-4xl mx-auto flex items-center space-x-3">
+      <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+            clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-white">HTTP TRACKER PLUS</h1>
+        <p class="text-sm text-gray-500">Settings & Preferences</p>
+      </div>
     </div>
-    <div style="float:left; width:30%;">
-      Include URL patterns
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto p-6 space-y-8">
+    <div id="persist_options" class="space-y-8">
+
+      <!-- Window Mode Section -->
+      <section class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <h2 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-400" viewBox="0 0 20 20"
+            fill="currentColor">
+            <path
+              d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+          </svg>
+          Window Mode
+        </h2>
+        <p class="text-sm text-gray-400 mb-4">Choose how the tracker window opens. Changes take effect on next open.</p>
+
+        <div class="flex space-x-4">
+          <label class="flex items-center space-x-3 cursor-pointer group">
+            <input type="radio" name="uipage" value="false" id="popup"
+              class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500">
+            <div>
+              <span class="text-white font-medium group-hover:text-blue-400 transition-colors">Popup Window</span>
+              <p class="text-xs text-gray-500">Opens in a separate popup</p>
+            </div>
+          </label>
+
+          <label class="flex items-center space-x-3 cursor-pointer group">
+            <input type="radio" name="uipage" value="true" id="tab"
+              class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500">
+            <div>
+              <span class="text-white font-medium group-hover:text-blue-400 transition-colors">Browser Tab</span>
+              <p class="text-xs text-gray-500">Opens in a new tab</p>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Include Patterns Section -->
+      <section class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <h2 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-400" viewBox="0 0 20 20"
+            fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd" />
+          </svg>
+          Include URL Patterns
+        </h2>
+        <p class="text-sm text-gray-400 mb-4">
+          Only track requests matching these patterns. Leave empty to track all requests.
+          <span class="text-gray-500">Separate multiple patterns with commas, spaces, or newlines.</span>
+        </p>
+        <textarea id="default_include_patterns" rows="4" placeholder="e.g., api.example.com, /api/v1/, graphql"
+          class="w-full bg-gray-900 border border-gray-700 rounded-lg p-4 text-sm text-gray-200 placeholder-gray-600 resize-y custom-scrollbar font-mono"></textarea>
+      </section>
+
+      <!-- Exclude Patterns Section -->
+      <section class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <h2 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-400" viewBox="0 0 20 20"
+            fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z"
+              clip-rule="evenodd" />
+          </svg>
+          Exclude URL Patterns
+        </h2>
+        <p class="text-sm text-gray-400 mb-4">
+          Skip tracking requests matching these patterns. Useful for filtering out noise.
+          <span class="text-gray-500">Separate multiple patterns with commas, spaces, or newlines.</span>
+        </p>
+        <textarea id="default_exclude_patterns" rows="4" placeholder="e.g., .png, .jpg, analytics, fonts.googleapis.com"
+          class="w-full bg-gray-900 border border-gray-700 rounded-lg p-4 text-sm text-gray-200 placeholder-gray-600 resize-y custom-scrollbar font-mono"></textarea>
+      </section>
+
+      <!-- Mask Patterns Section -->
+      <section class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <h2 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-400" viewBox="0 0 20 20"
+            fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+              clip-rule="evenodd" />
+          </svg>
+          Mask Sensitive Fields
+        </h2>
+        <p class="text-sm text-gray-400 mb-4">
+          Hide values of headers/parameters matching these names for privacy.
+          <span class="text-gray-500">Separate multiple patterns with commas, spaces, or newlines.</span>
+        </p>
+        <textarea id="default_mask_patterns" rows="4"
+          placeholder="e.g., password, token, authorization, api-key, secret"
+          class="w-full bg-gray-900 border border-gray-700 rounded-lg p-4 text-sm text-gray-200 placeholder-gray-600 resize-y custom-scrollbar font-mono"></textarea>
+      </section>
+
     </div>
-    <div>
-      <textarea id="default_include_patterns" rows="5" cols="100"></textarea>
-    </div>
-    <div style="float:left; width:30%">
-      Exclude URL patterns
-    </div>
-    <div>
-      <textarea id="default_exclude_patterns" rows="5" cols="100"></textarea>
-    </div>
-    <div style="float:left; width:30%">
-      Mask patterns
-    </div>
-    <div>
-      <textarea id="default_mask_patterns" rows="5" cols="100"></textarea>
-    </div>
-  </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-600 text-sm py-4">
+      <p>Settings are saved automatically as you type.</p>
+    </footer>
+  </main>
+
   <script type="text/javascript" src="/src/js/httpTrackerConstants.js"></script>
+  <script type="text/javascript" src="/src/js/httpTrackerHelpers.js"></script>
   <script type="text/javascript" src="/src/js/httpTrackerUtils.js"></script>
   <script type="text/javascript" src="/src/js/httpTrackerOptions.js"></script>
 </body>

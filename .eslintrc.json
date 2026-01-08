@@ -6,37 +6,97 @@
     },
     "extends": "google",
     "ignorePatterns": [
-        "**/*untitled*.js"
+        "**/*untitled*.js",
+        "**/tailwindcss.min.js",
+        "**/node_modules/**"
     ],
     "parserOptions": {
-        "ecmaFeatures": {},
         "ecmaVersion": "latest",
-        "sourceType": "module"
+        "sourceType": "script"
     },
-    "overrides": [
-        {
-            "files": [
-                "*.js"
-            ],
-            "rules": {
-                "object-curly-newline": [
-                    "error",
-                    {
-                        "minProperties": 1
-                    }
-                ],
-                "no-multi-spaces": [
-                    "error",
-                    {
-                        "ignoreEOLComments": false
-                    }
-                ],
-                "arrow-parens": [
-                    "error",
-                    "always"
-                ],
-                "require-jsdoc": "off"
+    "globals": {
+        "httpTracker": "readonly",
+        "httpTrackerHelpers": "readonly",
+        "httpTrackerDNR": "readonly",
+        "eventTracker": "readonly",
+        "debuggerTracker": "readonly",
+        "chrome": "readonly"
+    },
+    "rules": {
+        "no-var": "error",
+        "prefer-const": "warn",
+        "eqeqeq": [
+            "error",
+            "smart"
+        ],
+        "no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "^_"
             }
-        }
-    ]
+        ],
+        "no-console": [
+            "warn",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ],
+        "max-len": [
+            "warn",
+            {
+                "code": 150,
+                "ignoreUrls": true,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true
+            }
+        ],
+        "object-curly-newline": [
+            "error",
+            {
+                "minProperties": 3,
+                "consistent": true
+            }
+        ],
+        "no-multi-spaces": [
+            "error",
+            {
+                "ignoreEOLComments": true
+            }
+        ],
+        "arrow-parens": [
+            "error",
+            "always"
+        ],
+        "require-jsdoc": "off",
+        "valid-jsdoc": "off",
+        "comma-dangle": [
+            "error",
+            "only-multiline"
+        ],
+        "quote-props": [
+            "error",
+            "as-needed"
+        ],
+        "indent": [
+            "error",
+            2,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "linebreak-style": "off",
+        "operator-linebreak": [
+            "error",
+            "after",
+            {
+                "overrides": {
+                    "?": "before",
+                    ":": "before"
+                }
+            }
+        ]
+    }
 }

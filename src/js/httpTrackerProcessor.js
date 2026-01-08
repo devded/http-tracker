@@ -269,14 +269,19 @@ const eventTracker = (function () {
   }
 
   function generateMETHODContent(webEvent) {
-    const methodColor = webEvent.method === 'POST' ? 'text-blue-400' : 'text-green-400';
+    // Use helper if available, fallback to inline
+    const methodColor = (typeof httpTrackerHelpers !== 'undefined')
+      ? httpTrackerHelpers.getMethodColorClass(webEvent.method)
+      : (webEvent.method === 'POST' ? 'text-blue-400' : 'text-green-400');
     return `<div class="flex-shrink-0 w-16 text-center text-[10px] font-black ${methodColor} tracking-tighter ml-2" id="web_event_method_${webEvent.requestIdEnhanced}">${webEvent.method}</div>`;
   }
 
   function generateSTATUSContent(webEvent) {
     const status = webEvent.statusCode ? webEvent.statusCode : webEvent.error ? STRING_ERROR : '...';
-    // Status Logic: >= 400 Red, >= 300 Yellow, < 300 Green, Error Red
-    const statusColor = status >= 400 || status === STRING_ERROR ? 'text-red-400 bg-red-900 bg-opacity-20' : (status >= 300 ? 'text-yellow-400 bg-yellow-900 bg-opacity-20' : 'text-green-400 bg-green-900 bg-opacity-20');
+    // Use helper if available, fallback to inline
+    const statusColor = (typeof httpTrackerHelpers !== 'undefined')
+      ? httpTrackerHelpers.getStatusColorClasses(status)
+      : (status >= 400 || status === STRING_ERROR ? 'text-red-400 bg-red-900 bg-opacity-20' : (status >= 300 ? 'text-yellow-400 bg-yellow-900 bg-opacity-20' : 'text-green-400 bg-green-900 bg-opacity-20'));
     return `<div class="flex-shrink-0 w-16 flex justify-center" id="web_event_status_${webEvent.requestIdEnhanced}"><span class="${statusColor} px-1.5 py-0.5 rounded text-[10px] font-bold tracking-tighter">${status}</span></div>`;
   }
 
