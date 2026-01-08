@@ -220,7 +220,7 @@ const eventTracker = (function () {
       generateDATETIMEContent(webEvent) +
       generateCACHEContent(webEvent) +
       '</div>';
-    getById('urls_list').insertAdjacentHTML('beforeend', containerContent);
+    getById('urls_list').insertAdjacentHTML('afterbegin', containerContent);
   }
 
   function updateEventList(webEvent) {
