@@ -3,6 +3,11 @@
 
 <head>
   <meta charset="utf-8" />
+  <title>HTTP-TRACKER Pro</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/src/css/tailwind.css" />
   <link rel="stylesheet" type="text/css" href="/src/css/styles.css" />
   <script type="text/javascript" src="/src/js/httpTrackerConstants.js"></script>
   <script type="text/javascript" src="/src/js/httpTrackerUtils.js"></script>
@@ -10,233 +15,252 @@
   <script type="text/javascript" src="/src/js/httpTrackerDebugger.js"></script>
   <script type="text/javascript" src="/src/js/httpTrackerDomEvents.js"></script>
   <script type="text/javascript" src="/src/js/httpTrackerOpen.js"></script>
+  <script type="text/javascript" src="/src/js/uiInteractions.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .mono {
+      font-family: 'Fira Code', monospace;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .tab-active {
+      border-bottom: 2px solid #3b82f6;
+      color: white;
+    }
+
+    /* Input Toggle Styles since v2 CDN doesn't support peer-checked well in some older browsers, ensuring it works */
+    .toggle-checkbox:checked {
+      right: 0;
+      border-color: #68D391;
+    }
+
+    .toggle-checkbox:checked+.toggle-label {
+      background-color: #68D391;
+    }
+  </style>
 </head>
 
-<body style="font-size: 100%">
-  <div id="web_events_tracking" class="web_event_tracker">
-    <div>
-      <div class="left_pane">
-        <div style="height: 30px;"
-          title="Provide a list of comma-separated words so that any url containing one of the words will be tracked by the addon. If the url does not contain any of the words, it will not be tracked. If same word is in skip list also, the matching url will not be tracked as skip list takes precedence. Leaving this input field blank tracks all the urls.">
-          <div style="float: left; width: 20%">
-            Track urls having :
-          </div>
-          <div style="float: left; width: 73%;">
-            <input id="track_urls_pattern" type="text"
-              placeholder="Track urls containing words. Leave this field empty to include all" style="width: 99%" />
-          </div>
-          <div id="info_include" style="float: left;width: 2%;">
-          </div>
-          <div class="empty_div">&nbsp;</div>
-        </div>
-        <div style="height: 30px;"
-          title="Provide a list of comma-separated words so that any url containing one of the words will not be tracked by the addon. If the url does not contain any of the words, it will be tracked. Leaving this input field blank tracks all the urls. Permanent excludes can also be set in the preferences.">
-          <div style="width: 20%; float: left;">
-            Skip urls having :
-          </div>
-          <div style="float: left; width: 73%;">
-            <input id="exclude_urls_pattern" type="text"
-              placeholder="Skip urls containing words. Leave this field empty to include all" style="width: 99%"
-              value="" />
-          </div>
-          <div id="info_exclude" style="float: left;width: 2%;">
-          </div>
-          <div class="empty_div">&nbsp;</div>
-        </div>
-        <div style="height: 30px;"
-          title="Provide a list of comma-separated words so that any url containing one of the words will be blocked by the addon and the request will never leave the browser. This acts like a blocker.">
-          <div style="width: 20%; float: left;">
-            Block urls having :
-          </div>
-          <div style="float: left;width: 73%;">
-            <input id="block_urls_pattern" type="text"
-              placeholder="Block urls containing words. This works as a 404 simulator" style="width: 99%" value="" />
-          </div>
-          <div class="empty_div">&nbsp;</div>
-        </div>
-        <div style="height: 30px;"
-          title="Filter captured events based on available filter options. To add more filtration, use &, |&#013;&#013;Examples:&#013;&#013;&nbsp;1. type: url, filter value: google&gmail, outcome : filter all urls containing 'google' AND followed by 'gmail' i.e. url should contain matching words in the same order of filter.&#013;&nbsp;2. type: method, filter value: get|post, outcome : filter all urls whose method is get OR post, ignoring order of entries">
-          <div style="float: left; width: 20%">
-            Filter list by :
-          </div>
-          <div style="float: left; width: 15%;">
-            <select id="web_event_filter_key">
-              <option value="0" selected="selected">URL</option>
-              <option value="1">METHOD</option>
-              <option value="2">STATUS</option>
-              <option value="3">DATE</option>
-              <option value="4">CACHE</option>
-            </select>
-          </div>
-          <div style="float:left; width: 45%;">
-            <input id="filter_web_events" type="text"
-              placeholder="Filter string case insensitive (min 3 chars). Read tooltip" style="width: 100%;" />
-          </div>
-          <div style="width: 15%; float: left; text-align: right;">
-            <input id="clear_filter_web_events" type="button" class="web_event_button_clear_filter"
-              title="Clear the filter textbox and display all events" value="Clear filter"></input>
-          </div>
-          <div class="empty_div">&nbsp;</div>
-        </div>
-        <div style="height: 30px; margin-bottom: 10px;"
-          title="Provide name, value and an optional url details for each header.&#013;&#013;examples&#013;&#013;1: Adding header to all urls containing word 'google' in them  &#013;&nbsp;&nbsp;&nbsp;&nbsp;url:google&#013;2: Add header to any url, leave the url part empty&#013;&#013;NOTES:&#013;&#013;&nbsp;&nbsp;1: Adding / modifiying forbidden headers has no effect.&#013;&nbsp;&nbsp;2: If header name is blank, that header is not added&#013;&nbsp;&nbsp;3: Only vaild headers will be added for requests matching the url property value and invalid headers will mark the name filed in RED color for indication.&#013;&nbsp;&nbsp;4:Its always good to keep more specific the url">
-          <div id="add_modify_headers_banner" style="width: 20%; float: left;">
-            Add/Modify request headers :
-          </div>
-          <div id="add_modify_headers" class="all_headers_containers">
-            <div id="header_details_0" class="single_header_container">
-              <div class="add_header_name">
-                Name <input id="header_name_0" type="text" class="header_input_name" />
-              </div>
-              <div class="add_header_value">
-                Value <input id="header_value_0" type="text" class="header_input_value" />
-              </div>
-              <div class="add_header_url">
-                URL <input id="header_url_0" type="text" class="header_input_url" />
-              </div>
-              <div class="add_header_apply">
-                <input id="header_apply_0" type="checkbox" class="header_input_apply" /><label for="header_apply_0"
-                  title="Check this to apply this header">Apply</label>
-              </div>
-              <div style="width: 12%;float: left;text-align: right;">
-                <div style="display: flex;">
-                  <div style="margin-right: 5px;float: left;flex-grow: 1;">
-                    <input id="header_button_remove_0" type="button" value="-" style="" />
-                  </div>
-                  <div>
-                    <input id="header_button_add_0" type="button" value="+" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="empty_div">&nbsp;</div>
+<body class="bg-gray-900 text-gray-200 h-screen flex flex-col overflow-hidden">
+  <!-- Top Navigation Bar -->
+  <header class="h-14 border-b border-gray-800 flex items-center justify-between px-6 bg-gray-900 z-20">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
+            clip-rule="evenodd" />
+        </svg>
+      </div>
+      <h1 class="text-lg font-bold tracking-tight text-white">HTTP-TRACKER PRO</h1>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <button id="toggle_track_web_events"
+        class="px-4 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 text-sm font-medium transition-all duration-200 flex items-center space-x-2 border border-gray-700">
+        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+        <span>Tracking</span>
+      </button>
+      <button id="delete_all_web_events"
+        class="p-1.5 rounded-lg hover:bg-red-900 text-gray-400 hover:text-red-400 transition-colors"
+        title="Clear all events">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+      <button id="preferences" class="p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 transition-colors"
+        title="Settings">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Toolbar -->
+  <div class="bg-gray-900 border-b border-gray-800 p-3 space-y-3">
+    <div class="flex flex-wrap items-center gap-4">
+      <!-- Filter Controls -->
+      <div class="flex items-center bg-gray-800 rounded-lg border border-gray-700 divide-x divide-gray-700">
+        <select id="web_event_filter_key"
+          class="bg-transparent text-sm py-1.5 pl-3 pr-8 outline-none text-gray-400 hover:text-white transition-colors cursor-pointer">
+          <option value="0">STATUS</option>
+          <option value="1">METHOD</option>
+          <option value="2" selected>URL</option>
+          <option value="3">DATE</option>
+        </select>
+        <div class="flex items-center px-3 min-w-[300px]">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-2" viewBox="0 0 20 20"
+            fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd" />
+          </svg>
+          <input id="filter_web_events" type="text" placeholder="Filter requests..."
+            class="bg-transparent text-sm py-1 outline-none w-full text-gray-200 placeholder-gray-500" />
+          <button id="clear_filter_web_events" class="text-gray-500 hover:text-gray-300 ml-2" title="Clear filter">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd" />
+            </svg>
+          </button>
         </div>
       </div>
-      <div class="right_pane">
-        <div style="float: left; margin-right: 20px; height: 30px;"
-          title="Check this to track form data along with headers and cookies">
-          <input id="include_form_data" type="checkbox" checked />
-          <label for="include_form_data">
-            Capture form data
-          </label>
-        </div>
-        <div style="float: left; margin-right: 20px; height: 30px;"
-          title="Check this to capture response body using DevTools Protocol. Note: This will show a debugging bar in the browser.">
-          <input id="include_response_body" type="checkbox" />
-          <label for="include_response_body">
-            Capture response body
-          </label>
-        </div>
-        <div style="float: left; margin-right: 20px; height: 30px;">
-          <input id="optimize_response_cookies" type="checkbox" checked>
-          <label for="optimize_response_cookies"
-            title="Check this to sort the response cookies, automatically identifies the final cookie applied to the domain/path when there is a same cookie with different values. Uncheck to display the cookies in the order they were received from the server">Optimize
-            response cookies</label>
-        </div>
-        <div style="height: 30px;" title="Global preferences to persist across browser sessions.">
-          <button id="preferences" type="button" class="web_event_button_preferences">Preferences</button>
-        </div>
-        <div style="height: 30px;">
-        </div>
-        <div style="height: 30px;"
-          title="Mask any attributes (headers, form data) containing one of the words from this list while dispalying. Will not mask if the data is raw data for a POST event. Leaving this filed blank will not mask any attributes.&#013;&#013;This feature is highly used while capturing screenshots containing sensitive attributes">
-          <div style="width: 20%; float: left;">
-            Mask fields :
-          </div>
-          <div style="float: left;width: 58%;">
-            <input id="mask_patterns_list" type="text"
-              placeholder="Mask headers, form fields matching comma-separated pattern(s)" style="width: 99%" value="" />
-          </div>
-          <div id="info_mask" style="float: left;width: 2%;">
-          </div>
-          <div style="float: left; width: 15%;text-align: right;">
-            <input id="enable_mask_patterns" type="checkbox" checked />
-            <label for="enable_mask_patterns">Mask fields</label>
-          </div>
-          <div class="empty_div">&nbsp;</div>
-        </div>
-        <div style="height: 30px;" title="Find content in the details pane of the selected url">
-          <div style="width: 20%; float: left;">
-            Find in details :
-          </div>
-          <div style="float: left;width: 75%;">
-            <input id="find_in_details_pattern" type="text" placeholder="Find text in details containing words"
-              style="width: 100%" value="" />
-          </div>
-          <div class="empty_div">&nbsp;</div>
-        </div>
-        <div style="height: 30px;">
-          <div style="width: 20%; float: left;">
-            <button id="delete_cookies_button" type="button" class="web_event_button_delete_all"
-              title="Delete all cookies for this domain">Delete cookies</button>
-          </div>
-          <div style="float: left;width: 75%;">
-            <input id="delete_cookies" type="text" placeholder="Enter a valid domain name to delete cookies"
-              style="width: 100%" value="" />
-          </div>
-          <div class="empty_div">&nbsp;</div>
-        </div>
-        <div style="height: 30px;">
-          <div style="width: 20%; float: left; text-align: center;">
-            <button id="delete_all_filtered_web_events" type="button" class="web_event_button_delete_all_filtered"
-              title="Delete all filtered list of events">Delete filtered</button>
-          </div>
-          <div style="width: 20%; float: left; text-align: center;">
-            <button id="delete_selected_web_event" type="button" class="web_event_button_delete_selected"
-              title="Delete selected event">Delete selected</button>
-          </div>
-          <div style="width: 20%; float:left; text-align: center;">
-            <button id="delete_all_web_events" type="button" class="web_event_button_delete_all"
-              title="Delete all events and clear the cache - same as closing / refreshing the tracker window">Delete
-              all</button>
-          </div>
-          <div style="width: 20%; float:left; text-align: center;">
-            <button id="toggle_track_web_events" type="button" class="web_event_button_toggle_track"
-              title="Pause or resume the tracker. When paused, nothing will be tracked.">Pause tracker</button>
-          </div>
-          <div style="width: 20%; float:left; text-align: center;">
-            <button id="delete_cookies" type="button" class="web_event_button_toggle_track"
-              title="Delete all cookies for the selected domain">Delete cookies</button>
-          </div>
-        </div>
+
+      <!-- Quick Toggles -->
+      <div class="flex items-center space-x-6 text-xs font-medium text-gray-400">
+        <label class="flex items-center space-x-2 cursor-pointer group">
+          <input id="include_form_data" type="checkbox" checked
+            class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-600 bg-gray-800" />
+          <span class="group-hover:text-gray-200">Request Body</span>
+        </label>
+
+        <label class="flex items-center space-x-2 cursor-pointer group">
+          <input id="include_response_body" type="checkbox"
+            class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-600 bg-gray-800" />
+          <span class="group-hover:text-gray-200">Response Body</span>
+        </label>
+
+        <label class="flex items-center space-x-2 cursor-pointer group">
+          <input id="optimize_response_cookies" type="checkbox" checked
+            class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-600 bg-gray-800" />
+          <span class="group-hover:text-gray-200">Optimize Cookies</span>
+        </label>
       </div>
     </div>
-    <div style="clear: both; height: 15px;"></div>
-    <div id="urls_list_heading" class="urls_list_heading">
-      <div class="web_event_list_url">URL [click a tracked url (if any) to view details]</div>
-      <div class="web_event_list_method">Method</div>
-      <div class="web_event_list_status">Status</div>
-      <div class="web_event_list_date_time">Date time</div>
-      <div class="web_event_list_cache">Cache</div>
-    </div>
-    <div id="urls_list" class="web_event_list_container" tabindex="0"></div>
-    <div style="height: 5px;">&nbsp;</div>
-    <div id="web_details_selected_container">
-      <div style="margin-top: 5px;">
-        <table class="web_event_details">
-          <tr>
-            <td id="web_event_detail_request_head" class="web_event_detail_request_heading" style="display: none;">
-              Request Details</td>
-            <td id="web_event_detail_response_head" class="web_event_detail_response_heading" style="display: none;">
-              Response Details</td>
-          </tr>
-        </table>
+
+    <!-- Pattern Filters -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="relative flex items-center">
+        <span
+          class="absolute left-3 z-10 w-14 text-[10px] font-bold text-blue-500 uppercase tracking-wider pointer-events-none">Track</span>
+        <input id="track_urls_pattern" type="text" placeholder="URL patterns to include..."
+          class="bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-14 pr-3 text-sm w-full focus:border-blue-500 outline-none transition-all placeholder-gray-600" />
       </div>
-      <div style="overflow-y: auto; height: 500px; overflow-x: hidden;">
-        <table class="web_event_details">
-          <tr>
-            <td id="web_event_details_selected_request" class="web_event_detail_td">
-              <table id="request_headers_details" class="web_event_request_header_details"></table>
-            </td>
-            <td id="web_event_details_selected_response" class="web_event_detail_td">
-              <table id="response_headers_details" class="web_event_response_header_details"></table>
-            </td>
-          </tr>
-        </table>
+      <div class="relative flex items-center">
+        <span
+          class="absolute left-3 z-10 w-14 text-[10px] font-bold text-yellow-500 uppercase tracking-wider pointer-events-none">Skip</span>
+        <input id="exclude_urls_pattern" type="text" placeholder="URL patterns to ignore..."
+          class="bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-14 pr-3 text-sm w-full focus:border-yellow-500 outline-none transition-all placeholder-gray-600" />
+      </div>
+      <div class="relative flex items-center">
+        <span
+          class="absolute left-3 z-10 w-14 text-[10px] font-bold text-red-500 uppercase tracking-wider pointer-events-none">Block</span>
+        <input id="block_urls_pattern" type="text" placeholder="URL patterns to block..."
+          class="bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-14 pr-3 text-sm w-full focus:border-red-500 outline-none transition-all placeholder-gray-600" />
       </div>
     </div>
   </div>
+
+  <!-- Main Grid Area -->
+  <main class="flex-grow flex overflow-hidden">
+    <!-- Events List Panel -->
+    <div class="w-1/2 flex flex-col border-r border-gray-800 h-full">
+      <div
+        class="bg-gray-900 px-4 py-2.5 text-[10px] font-bold text-gray-500 uppercase flex items-center border-b border-gray-800">
+        <div class="w-16 text-center flex-shrink-0">Status</div>
+        <div class="w-16 text-center flex-shrink-0 ml-2">Method</div>
+        <div class="flex-grow min-w-0 px-3">URL</div>
+        <div class="w-20 text-right flex-shrink-0">Time</div>
+      </div>
+      <div id="urls_list" class="flex-grow overflow-y-auto custom-scrollbar divide-y divide-gray-800" tabindex="0">
+        <!-- Events will be populated here -->
+      </div>
+    </div>
+
+    <!-- Details Panel -->
+    <div class="w-1/2 flex flex-col h-full bg-gray-900">
+      <div id="web_details_selected_container"
+        class="flex flex-col h-full invisible opacity-0 transition-opacity duration-200 hidden">
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-800 bg-gray-900 h-10 px-4 items-center space-x-2" id="details_tabs">
+          <button data-target="panel_request"
+            class="details-tab-btn px-4 py-2 text-xs font-semibold text-white border-b-2 border-blue-500 hover:text-white transition-all active">Request</button>
+          <button data-target="panel_response"
+            class="details-tab-btn px-4 py-2 text-xs font-semibold text-gray-400 border-b-2 border-transparent hover:text-white transition-all">Response</button>
+        </div>
+
+        <!-- Detail Panels (Single Column) -->
+        <div class="flex-grow overflow-y-auto custom-scrollbar bg-gray-900 relative">
+
+          <!-- Request Panel -->
+          <div id="panel_request" class="details-tab-content p-5 space-y-4">
+            <div id="request_headers_details" class="details-content">
+              <!-- Request content populated by JS -->
+            </div>
+          </div>
+
+          <!-- Response Panel -->
+          <div id="panel_response" class="details-tab-content p-5 space-y-4 hidden">
+            <div id="response_headers_details" class="details-content">
+              <!-- Response content populated by JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Detail Footer -->
+        <div class="h-10 border-t border-gray-800 bg-gray-900 flex items-center justify-between px-4 text-xs">
+          <button id="delete_selected_web_event" class="text-gray-500 hover:text-red-400 flex items-center space-x-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                clip-rule="evenodd" />
+            </svg>
+            <span>Delete Entry</span>
+          </button>
+          <div class="relative flex items-center min-w-[200px]">
+            <input id="find_in_details_pattern" type="text" placeholder="Search in details..."
+              class="bg-gray-800 border border-gray-700 rounded py-1 px-3 text-[11px] w-full outline-none focus:border-gray-600 transition-all font-medium" />
+            <!-- Hidden compatibility elements -->
+            <div style="display:none">
+              <div id="add_modify_headers"></div>
+              <div id="add_modify_headers_banner"></div>
+              <div id="enable_mask_patterns"></div>
+              <div id="mask_patterns_list"></div>
+              <div id="delete_cookies"></div>
+              <div id="delete_cookies_button"></div>
+              <div id="delete_all_filtered_web_events"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="details_empty_state" class="flex-grow flex flex-col items-center justify-center text-gray-600 space-y-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 opacity-20" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+        </svg>
+        <p class="text-sm font-medium">Select a request to view details</p>
+      </div>
+    </div>
+  </main>
 </body>
 
 </html>

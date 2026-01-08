@@ -30,16 +30,17 @@ const eventTracker = (function () {
   let isANDFilter = false;
   let selectedDomain = '';
 
-  const CLASS_LIST_TO_ADD = `web_event_list_blank web_event_list_style`;
-  const HEADER_CONTENT_BANNER = `<tr><td colspan=2 class='web_event_detail_cookie'>Headers</td></tr>`;
-  const COOKIE_CONTENT_BANNER = `<tr><td colspan=2 class='web_event_detail_cookie'>Cookies (sorted by symbols, Aa-Zz)</td></tr>`;
-  const COOKIE_CONTENT_BANNER_OPTIMIZED = '<tr><td colspan=2 class=\'web_event_detail_cookie\'>Cookies (optimized)</td></tr>';
-  const COOKIE_CONTENT_BANNER_UNOPTIMIZED = '<tr><td colspan=2 class=\'web_event_detail_cookie\'>Cookies (unoptimized)</td></tr>';
+  const CLASS_LIST_TO_ADD = `flex items-center px-4 py-2 hover:bg-gray-800 cursor-pointer transition-colors group border-b border-gray-800`;
+  const HEADER_CONTENT_BANNER = `<div class="section-banner general-banner">General Info</div><div class="headers-container">`;
+  const COOKIE_CONTENT_BANNER = `</div><div class="section-banner cookie-banner">Cookies</div><div class="headers-container">`;
+  const COOKIE_CONTENT_BANNER_OPTIMIZED = `</div><div class="section-banner cookie-banner">Cookies (Optimized)</div><div class="headers-container">`;
+  const COOKIE_CONTENT_BANNER_UNOPTIMIZED = `</div><div class="section-banner cookie-banner">Cookies (Raw)</div><div class="headers-container">`;
+  const RESPONSE_BODY_BANNER = `</div><div class="section-banner response-body-banner">Response Body</div>`;
   const ignoreHeaders = ['frameAncestors', 'frameId', 'parentFrameId', 'tabId', 'timeStamp', 'type', 'callerName', 'requestIdEnhanced', 'requestId'];
-  const REQUEST_NOT_AVAILABLE = `<tr><td class='web_event_style_error' style='text-align: center;'>Request not available</td></tr>`;
-  const RESPONSE_NOT_AVAILABLE = `<tr><td class='web_event_style_error' style='text-align: center;'>Response not available</td></tr>`;
-  const HEADER_CONTENT_KEY = `<tr><td class='web_event_detail_header_key'>`;
-  const HEADER_CONTENT_VALUE = `</td><td class='web_event_detail_header_value'>`;
+  const REQUEST_NOT_AVAILABLE = `<div class="text-gray-500 italic text-sm p-4 text-center">Request data not available</div>`;
+  const RESPONSE_NOT_AVAILABLE = `<div class="text-gray-500 italic text-sm p-4 text-center">Response data not available</div>`;
+  const HEADER_CONTENT_KEY = `<div class="header-row"><div class="header-key">`;
+  const HEADER_CONTENT_VALUE = `</div><div class="header-value">`;
 
   async function logRequestDetails(webEvent) {
     const inserted = insertEventUrls(webEvent);
@@ -213,9 +214,9 @@ const eventTracker = (function () {
   function addEventList(webEvent) {
     addedRequestId.push(webEvent.requestIdEnhanced);
     const containerContent = '<div title=\'Click to view details\' class=\'' + CLASS_LIST_TO_ADD + '\' id=\'web_events_list_' + webEvent.requestIdEnhanced + '\'>' +
-      generateURLContent(webEvent) +
-      generateMETHODContent(webEvent) +
       generateSTATUSContent(webEvent) +
+      generateMETHODContent(webEvent) +
+      generateURLContent(webEvent) +
       generateDATETIMEContent(webEvent) +
       generateCACHEContent(webEvent) +
       '</div>';
@@ -223,16 +224,17 @@ const eventTracker = (function () {
   }
 
   function updateEventList(webEvent) {
-    if (webEvent.callerName === 'onErrorOccurred') { // onErrorOccurred contains webEvent.error not webEvent.statusCode
-      getById(`web_events_list_${webEvent.requestIdEnhanced}`).classList.add('web_event_style_error');
-      getById(`web_event_status_${webEvent.requestIdEnhanced}`).innerHTML = STRING_ERROR;
+    const row = getById(`web_events_list_${webEvent.requestIdEnhanced}`);
+    if (!row) return;
+
+    if (webEvent.callerName === 'onErrorOccurred') {
+      // row.classList.add('bg-red-900', 'bg-opacity-10'); // Optional row highlight
+      getById(`web_event_status_${webEvent.requestIdEnhanced}`).innerHTML = `<span class="bg-red-900 bg-opacity-20 text-red-400 px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-tighter">${STRING_ERROR}</span>`;
+    } else if (webEvent.statusCode) {
+      // row.classList.remove('bg-red-900', 'bg-opacity-10');
+      const statusColor = webEvent.statusCode >= 400 ? 'text-red-400 bg-red-900 bg-opacity-20' : (webEvent.statusCode >= 300 ? 'text-yellow-400 bg-yellow-900 bg-opacity-20' : 'text-green-400 bg-green-900 bg-opacity-20');
+      getById(`web_event_status_${webEvent.requestIdEnhanced}`).innerHTML = `<span class="${statusColor} px-1.5 py-0.5 rounded text-[10px] font-bold tracking-tighter">${webEvent.statusCode}</span>`;
     }
-    // do not update if statusCode is not available (ex: service workers, fetch events in FF are missing response events)
-    else if (webEvent.statusCode) {
-      getById(`web_events_list_${webEvent.requestIdEnhanced}`).classList.remove('web_event_style_error');
-      getById(`web_event_status_${webEvent.requestIdEnhanced}`).innerHTML = webEvent.statusCode;
-    }
-    getById(`web_event_cache_${webEvent.requestIdEnhanced}`).innerHTML = webEvent.fromCache ? webEvent.fromCache : 'N/A';
   }
 
   function filterEventList(webEvent) {
@@ -263,23 +265,28 @@ const eventTracker = (function () {
   }
 
   function generateURLContent(webEvent) {
-    return `<div class='web_event_list_url' id='web_event_url_${webEvent.requestIdEnhanced}'>${webEvent.url}</div>`;
+    return `<div class="flex-grow min-w-0 px-3 truncate text-sm font-medium text-gray-300 group-hover:text-white transition-colors" id="web_event_url_${webEvent.requestIdEnhanced}">${webEvent.url}</div>`;
   }
 
   function generateMETHODContent(webEvent) {
-    return `<div class='web_event_list_method' id='web_event_method_${webEvent.requestIdEnhanced}'>${webEvent.method}</div>`;
+    const methodColor = webEvent.method === 'POST' ? 'text-blue-400' : 'text-green-400';
+    return `<div class="flex-shrink-0 w-16 text-center text-[10px] font-black ${methodColor} tracking-tighter ml-2" id="web_event_method_${webEvent.requestIdEnhanced}">${webEvent.method}</div>`;
   }
 
   function generateSTATUSContent(webEvent) {
-    return `<div class='web_event_list_status' id='web_event_status_${webEvent.requestIdEnhanced}'>${(webEvent.statusCode ? webEvent.statusCode : webEvent.error ? STRING_ERROR : 'N/A')}</div>`;
+    const status = webEvent.statusCode ? webEvent.statusCode : webEvent.error ? STRING_ERROR : '...';
+    // Status Logic: >= 400 Red, >= 300 Yellow, < 300 Green, Error Red
+    const statusColor = status >= 400 || status === STRING_ERROR ? 'text-red-400 bg-red-900 bg-opacity-20' : (status >= 300 ? 'text-yellow-400 bg-yellow-900 bg-opacity-20' : 'text-green-400 bg-green-900 bg-opacity-20');
+    return `<div class="flex-shrink-0 w-16 flex justify-center" id="web_event_status_${webEvent.requestIdEnhanced}"><span class="${statusColor} px-1.5 py-0.5 rounded text-[10px] font-bold tracking-tighter">${status}</span></div>`;
   }
 
   function generateDATETIMEContent(webEvent) {
-    return `<div class='web_event_list_date_time' id='web_event_time_${webEvent.requestIdEnhanced}'>${(webEvent.timeStamp ? getReadableDate(webEvent.timeStamp) : 'N/A')}</div>`;
+    const timeStr = webEvent.timeStamp ? new Date(webEvent.timeStamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'N/A';
+    return `<div class="flex-shrink-0 w-20 text-right text-[10px] text-gray-500 mono" id="web_event_time_${webEvent.requestIdEnhanced}">${timeStr}</div>`;
   }
 
   function generateCACHEContent(webEvent) {
-    return `<div class='web_event_list_cache' id='web_event_cache_${webEvent.requestIdEnhanced}'>N/A</div>`;
+    return ``; // Hidden in main list
   }
 
   function getReadableDate(timestamp) {
@@ -352,15 +359,19 @@ const eventTracker = (function () {
     const responseContainer = buildURLDetailsContainer(webEventIdResponse, 'responseDetails');
     const responseBodyContainer = buildResponseBodyContainer(webEventIdResponseBody);
     const requestFormContainer = buildRequestFormContainer(webEventIdRequestForm);
-    getById('web_event_details_selected_request').style.borderRight = '1px solid';
-    getById('web_event_details_selected_response').style.borderRight = '1px solid';
-    getById('web_event_details_selected_request').style.borderLeft = '1px solid';
-    getById('web_event_details_selected_response').style.borderLeft = '1px solid';
-    getById('web_event_details_selected_request').style.borderBottom = '1px solid';
-    getById('web_event_details_selected_response').style.borderBottom = '1px solid';
+
     getById('request_headers_details').innerHTML = requestContainer + requestFormContainer;
     getById('response_headers_details').innerHTML = responseContainer + responseBodyContainer;
-    getById('web_details_selected_container').style = 'visibility: visible;';
+
+    // Modern UI toggles
+    const container = getById('web_details_selected_container');
+    const emptyState = getById('details_empty_state');
+
+    if (container && emptyState) {
+      container.classList.remove('opacity-0', 'invisible', 'hidden');
+      container.classList.add('visible', 'opacity-100');
+      emptyState.classList.add('hidden');
+    }
   }
 
   function deleteCookiesForSelectedDomain() {
@@ -398,7 +409,7 @@ const eventTracker = (function () {
     } else {
       tableContent = REQUEST_NOT_AVAILABLE;
     }
-    return tableContent + headersContent;
+    return tableContent + headersContent + '</div>';  // Close the last headers-container
   }
 
   function generateHeaderKeyValueContent(key, value) {
@@ -408,7 +419,23 @@ const eventTracker = (function () {
         value = value.charAt(0) + '*****' + value.charAt(value.length - 1);
       }
     }
-    return `${HEADER_CONTENT_KEY}${addMarkTag(key)}${HEADER_CONTENT_VALUE}${addMarkTag(value)}`;
+
+    // Escape HTML in values to prevent XSS and rendering issues
+    const escapeHtml = (str) => {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+
+    const escapedKey = escapeHtml(key);
+    const escapedValue = escapeHtml(value);
+
+    return `<div class="header-row">
+        <div class="header-key" title="${escapedKey}">${addMarkTag(escapedKey)}</div>
+        <div class="header-value" title="${escapedValue}">${addMarkTag(escapedValue)}</div>
+      </div>`;
   }
 
   function addMarkTag(text) {
@@ -424,29 +451,71 @@ const eventTracker = (function () {
     let formData = '';
     if (webEventIdRequestForm) {
       if (webEventIdRequestForm.formData) {
-        formData = '<tr><td colspan=2 class=\'web_event_detail_cookie\'>Body (form fields data)</td></tr>';
+        formData = `<div class="section-banner request-body-banner">Request Body (Form Data)</div><div class="headers-container">`;
         Object.entries(webEventIdRequestForm.formData).forEach(([key, value]) => {
           formData += generateHeaderKeyValueContent(key, value);
         });
+        formData += '</div>';
       } else if (webEventIdRequestForm.raw) {
-        formData = '<tr><td colspan=2 class=\'web_event_detail_cookie\'>Body (raw form data)</td></tr>';
+        formData = `<div class="section-banner request-body-banner">Request Body</div>`;
         for (const eachByte of webEventIdRequestForm.raw) {
           const dataView = new DataView(eachByte.bytes);
           let decodedString = decoder.decode(dataView);
 
-          // Try to beautify JSON if it's a JSON payload
+          // Try to beautify and syntax highlight JSON
+          let isJson = false;
           try {
             const json = JSON.parse(decodedString);
             decodedString = JSON.stringify(json, null, 2);
+            isJson = true;
           } catch (e) {
             // Not JSON, keep as is
           }
 
-          formData += `<tr class='web_event_response_body_row'><td colspan=2><pre class='web_event_body_content'>${addMarkTag(decodedString)}</pre></td></tr>`;
+          if (isJson) {
+            formData += `<div class="json-viewer">${syntaxHighlightJson(decodedString)}</div>`;
+          } else {
+            formData += `<div class="body-preview">${addMarkTag(escapeHtmlGlobal(decodedString))}</div>`;
+          }
         }
       }
     }
     return formData;
+  }
+
+  // Global HTML escape function
+  function escapeHtmlGlobal(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // Syntax highlight JSON with colors inspired by Insomnia
+  function syntaxHighlightJson(json) {
+    // Escape HTML first
+    json = escapeHtmlGlobal(json);
+
+    // Apply syntax highlighting
+    return json.replace(
+      /("(\\u[a-zA-Z0-9]{4}|\\[^"]|[^\\"])*")(\s*:)?|(\btrue\b|\bfalse\b|\bnull\b)|(-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
+      function (match, str, _, colon, bool, num) {
+        let cls = 'json-number'; // numbers
+        if (str) {
+          if (colon) {
+            cls = 'json-key'; // keys
+          } else {
+            cls = 'json-string'; // string values
+          }
+        } else if (bool) {
+          cls = 'json-boolean'; // booleans
+        } else if (num) {
+          cls = 'json-number'; // numbers
+        }
+        return `<span class="${cls}">${match}</span>`;
+      }
+    );
   }
 
   function buildResponseBodyContainer(responseBody) {
@@ -457,15 +526,21 @@ const eventTracker = (function () {
         responseBody = responseBody.substring(0, MAX_RESPONSE_BODY_SIZE) + '\n... [Content Truncated]';
       }
 
-      // Try to beautify JSON
+      // Try to beautify and syntax highlight JSON
+      let isJson = false;
       try {
         const json = JSON.parse(responseBody);
         responseBody = JSON.stringify(json, null, 2);
+        isJson = true;
       } catch (e) {
         // Not JSON, keep as is
       }
 
-      bodyData += `<tr class='web_event_response_body_row'><td colspan=2><pre class='web_event_body_content'>${addMarkTag(responseBody)}</pre></td></tr>`;
+      if (isJson) {
+        bodyData += `<div class="json-viewer">${syntaxHighlightJson(responseBody)}</div>`;
+      } else {
+        bodyData += `<div class="body-preview">${addMarkTag(escapeHtmlGlobal(responseBody))}</div>`;
+      }
     }
     return bodyData;
   }
@@ -493,16 +568,16 @@ const eventTracker = (function () {
       }
       // other headers
       else {
-        generalHeadersContent += `${HEADER_CONTENT_KEY}${addMarkTag(header.name)}${HEADER_CONTENT_VALUE}${addMarkTag(header.value)}</td></tr>`;
+        generalHeadersContent += `${HEADER_CONTENT_KEY}${addMarkTag(header.name)}${HEADER_CONTENT_VALUE}${addMarkTag(header.value)}</div></div>`;
       }
     });
     if (optimizeResponseCookies) {
       sortMapByKey(optimizedCookiesMap).forEach((value, key) => {
-        cookieContent += `${HEADER_CONTENT_KEY}${addMarkTag(key.split(':', 1))}${HEADER_CONTENT_VALUE}${addMarkTag(value.cookieValue)}</td></tr>`;
+        cookieContent += `${HEADER_CONTENT_KEY}${addMarkTag(key.split(':', 1))}${HEADER_CONTENT_VALUE}${addMarkTag(value.cookieValue)}</div></div>`;
       });
     }
     if (cookieContent) {
-      cookieContent = banner + cookieContent;
+      cookieContent = banner + cookieContent + '</div>';  // Close cookie headers-container
     }
     return generalHeadersContent + cookieContent;
   }
@@ -523,7 +598,7 @@ const eventTracker = (function () {
       }
     });
     cookieMap.forEach((value, key) => {
-      cookieContent += `${HEADER_CONTENT_KEY}${addMarkTag(key)}${HEADER_CONTENT_VALUE}${addMarkTag(value)}</td></tr>`;
+      cookieContent += `${HEADER_CONTENT_KEY}${addMarkTag(key)}${HEADER_CONTENT_VALUE}${addMarkTag(value)}</div></div>`;
     });
     return cookieContent;
   }
@@ -534,7 +609,7 @@ const eventTracker = (function () {
     cookieList.forEach((cookie) => {
       if (cookie) {
         const cookieDetails = getCookieNameValue(cookie);
-        cookieContent += `${HEADER_CONTENT_KEY}${addMarkTag(cookieDetails.cookieName)}${HEADER_CONTENT_VALUE}${addMarkTag(cookieDetails.cookieValue)}</td></tr>`;
+        cookieContent += `${HEADER_CONTENT_KEY}${addMarkTag(cookieDetails.cookieName)}${HEADER_CONTENT_VALUE}${addMarkTag(cookieDetails.cookieValue)}</div></div>`;
       }
     });
     return cookieContent;
@@ -847,12 +922,18 @@ const eventTracker = (function () {
   }
 
   function updateToggleCaptureEvents() {
+    const btn = getById('toggle_track_web_events');
+    if (!btn) return;
+
     if (toggleCaptureEvents) {
       toggleCaptureEvents = false;
-      getById('toggle_track_web_events').innerHTML = 'Resume tracker';
+      btn.innerHTML = '<span class="w-2 h-2 rounded-full bg-gray-500"></span><span>Paused</span>';
+      // replace classes to darken/disable look
+      btn.classList.add('opacity-75');
     } else {
       toggleCaptureEvents = true;
-      getById('toggle_track_web_events').innerHTML = 'Pause tracker';
+      btn.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span><span>Tracking</span>';
+      btn.classList.remove('opacity-75');
     }
   }
 
@@ -894,12 +975,16 @@ const eventTracker = (function () {
     allResponseHeaders.clear();
     responseBodyData.clear();
     addedRequestId.length = 0;
-    getById('web_event_details_selected_request').style.border = 'none';
-    getById('web_event_details_selected_response').style.border = 'none';
     getById('response_headers_details').innerHTML = '';
     getById('request_headers_details').innerHTML = '';
     getById('urls_list').innerHTML = '';
-    getById('web_details_selected_container').style = 'visibility: hidden;';
+
+    const container = getById('web_details_selected_container');
+    const emptyState = getById('details_empty_state');
+    if (container && emptyState) {
+      container.classList.add('opacity-0', 'invisible', 'hidden');
+      emptyState.classList.remove('hidden');
+    }
   }
 
   function deleteFilteredEvents() {
@@ -964,10 +1049,15 @@ const eventTracker = (function () {
   }
 
   function setEventRowAsSelected(event) {
-    if (event.target && event.target.parentElement.classList.contains('web_event_list_blank')) {
-      markSelectedRequest(event.target.parentElement.id);
+    let target = event.target;
+    // Bubble up to find the row container (div with id starting with web_events_list_)
+    while (target && target.id !== 'urls_list' && (!target.id || !target.id.startsWith('web_events_list_'))) {
+      target = target.parentNode;
+    }
+
+    if (target && target.id && target.id.startsWith('web_events_list_')) {
+      markSelectedRequest(target.id);
       getById('delete_selected_web_event').disabled = false;
-      getById('delete_selected_web_event').classList.remove('web_event_list_filtered');
     }
   }
 
@@ -1113,11 +1203,11 @@ const eventTracker = (function () {
   }
 
   function markSelectedRequest(requestId) {
-    getById('web_event_detail_request_head').style.removeProperty('display');
-    getById('web_event_detail_response_head').style.removeProperty('display');
     deselectEvent();
     const element = getById(requestId);
-    element.classList.add('web_event_list_selected');
+    if (element) {
+      element.classList.add('bg-blue-600', 'bg-opacity-20', 'border-l-4', 'border-l-blue-500');
+    }
     selectedWebEventRequestId = requestId.substring(16);
     displayEventProperties();
   }
@@ -1125,12 +1215,13 @@ const eventTracker = (function () {
   function deselectEvent() {
     const selectedEvent = getSelectedEvent();
     if (selectedEvent) {
-      selectedEvent.classList.remove('web_event_list_selected');
+      selectedEvent.classList.remove('bg-blue-600', 'bg-opacity-20', 'border-l-4', 'border-l-blue-500');
     }
   }
 
   function getSelectedEvent() {
-    return getByClassNames('web_event_list_selected')[0];
+    const all = Array.prototype.slice.call(getAllUrlsList()); // compatible with HTMLCollection
+    return all.find(el => el.classList.contains('bg-blue-600'));
   }
 
   document.addEventListener('DOMContentLoaded', function () {
