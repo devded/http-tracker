@@ -30,7 +30,7 @@ const eventTracker = (function () {
   let isANDFilter = false;
   let selectedDomain = '';
 
-  const CLASS_LIST_TO_ADD = `flex items-center px-4 py-2 hover:bg-gray-800 cursor-pointer transition-colors group border-b border-gray-800`;
+  const CLASS_LIST_TO_ADD = `web_event_list_blank flex items-center px-4 py-2 hover:bg-gray-800 cursor-pointer transition-colors group border-b border-gray-800`;
   const HEADER_CONTENT_BANNER = `<div class="section-banner general-banner">General Info</div><div class="headers-container">`;
   const COOKIE_CONTENT_BANNER = `</div><div class="section-banner cookie-banner">Cookies</div><div class="headers-container">`;
   const COOKIE_CONTENT_BANNER_OPTIMIZED = `</div><div class="section-banner cookie-banner">Cookies (Optimized)</div><div class="headers-container">`;
