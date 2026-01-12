@@ -100,4 +100,8 @@ if (httpTracker.isFF) {
   );
 }
 
-debuggerTracker.init();
+if (httpTracker.isFF) {
+  firefoxResponseTracker.init();
+} else {
+  debuggerTracker.init();
+}

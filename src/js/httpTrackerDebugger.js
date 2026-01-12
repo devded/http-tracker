@@ -24,7 +24,7 @@ const debuggerTracker = (function () {
      * @param {number} tabId - Chrome tab ID
      */
     function attachToTab(tabId) {
-        if (tabId === -1 || attachedTabs.has(tabId) || attachingTabs.has(tabId)) return;
+        if (httpTracker.isFF || tabId === -1 || attachedTabs.has(tabId) || attachingTabs.has(tabId)) return;
 
         attachingTabs.add(tabId);
 

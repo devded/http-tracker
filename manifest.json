@@ -9,6 +9,7 @@
   "permissions": [
     "storage",
     "webRequest",
+    "webRequestBlocking",
     "tabs",
     "cookies",
     "debugger",
