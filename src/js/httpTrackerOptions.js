@@ -19,7 +19,13 @@ async function storeSettings(event) {
   setPropertyToStorage(key, value);
 }
 
-httpTracker.browser.storage.sync.get([httpTracker.STORAGE_KEY_INCLUDE_PATTERN, httpTracker.STORAGE_KEY_EXCLUDE_PATTERN, httpTracker.STORAGE_KEY_MASK_PATTERN, httpTracker.STORAGE_KEY_OPEN_ADDON_IN_TAB], function(cbResponseParams) {
+// Theme Synchronization
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+  document.documentElement.classList.add('light-mode');
+}
+
+httpTracker.browser.storage.sync.get([httpTracker.STORAGE_KEY_INCLUDE_PATTERN, httpTracker.STORAGE_KEY_EXCLUDE_PATTERN, httpTracker.STORAGE_KEY_MASK_PATTERN, httpTracker.STORAGE_KEY_OPEN_ADDON_IN_TAB], function (cbResponseParams) {
   let value = getPropertyFromStorage(cbResponseParams, httpTracker.STORAGE_KEY_INCLUDE_PATTERN);
   getById('default_include_patterns').value = getProcessedValue(value);
 

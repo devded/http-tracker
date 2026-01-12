@@ -45,7 +45,21 @@ function getAddonOptions(details) {
       }
     });
   } else {
-    httpTracker.browser.runtime.openOptionsPage();
+    const optionsUrl = 'options.html';
+    try {
+      if (httpTracker && httpTracker.browser && httpTracker.browser.runtime && httpTracker.browser.runtime.openOptionsPage) {
+        // Try to open using the standard API first
+        httpTracker.browser.runtime.openOptionsPage().catch((err) => {
+          // Fallback for browsers/contexts where openOptionsPage fails or isn't supported
+          window.open(optionsUrl);
+        });
+      } else {
+        window.open(optionsUrl);
+      }
+    } catch (e) {
+      // Final fallback if everything else fails
+      window.open(optionsUrl);
+    }
   }
 }
 

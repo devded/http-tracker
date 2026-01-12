@@ -769,29 +769,41 @@ const eventTracker = (function () {
   }
 
   function bindDefaultEvents() {
-    getById('track_urls_pattern').oninput = setPatternsToInclude;
-    getById('exclude_urls_pattern').oninput = setPatternsToExclude;
-    getById('block_urls_pattern').oninput = setPatternsToBlock;
-    getById('mask_patterns_list').oninput = setPatternsToMask;
-    getById('enable_mask_patterns').onchange = maskFieldsCheckbox;
-    getById('include_form_data').onchange = captureFormDataCheckbox;
-    getById('include_response_body').onchange = captureResponseBodyCheckbox;
-    getById('optimize_response_cookies').onchange = optimizeResponseCookiesCheckbox;
-    getById('filter_web_events').oninput = filterEvents;
-    getById('web_event_filter_key').oninput = filterEvents;
-    getById('clear_filter_web_events').onclick = clearFilterBoxDisplayAllURLsAndUpdateButtons;
-    getById('delete_all_filtered_web_events').onclick = deleteFilteredEvents;
-    getById('delete_selected_web_event').onclick = removeSelectedEvent;
-    getById('delete_all_web_events').onclick = clearAllEvents;
-    getById('urls_list').onclick = setEventRowAsSelected;
-    getById('urls_list').onkeydown = updateSelectedEventToContainer;
-    getById('toggle_track_web_events').onclick = updateToggleCaptureEvents;
-    getById('header_button_remove_0').onclick = clearAndRemoveHeaderContents;
-    getById('header_button_add_0').onclick = addNewHeaderContainer;
-    getById('add_modify_headers').oninput = generateHeadersToAddOrModify; // either on text change
-    getById('find_in_details_pattern').oninput = setFindPatterns;
-    getById('delete_cookies_button').onclick = deleteCookiesForSelectedDomain;
-    getById('preferences').addEventListener('click', function () {
+    const bindSafe = (id, event, handler) => {
+      const el = getById(id);
+      if (el) {
+        if (event === 'onclick') el.onclick = handler;
+        else if (event === 'oninput') el.oninput = handler;
+        else if (event === 'onchange') el.onchange = handler;
+        else if (event === 'onkeydown') el.onkeydown = handler;
+        else if (event === 'click_listener') el.addEventListener('click', handler);
+      }
+    };
+
+    bindSafe('track_urls_pattern', 'oninput', setPatternsToInclude);
+    bindSafe('exclude_urls_pattern', 'oninput', setPatternsToExclude);
+    bindSafe('block_urls_pattern', 'oninput', setPatternsToBlock);
+    bindSafe('mask_patterns_list', 'oninput', setPatternsToMask);
+    bindSafe('enable_mask_patterns', 'onchange', maskFieldsCheckbox);
+    bindSafe('include_form_data', 'onchange', captureFormDataCheckbox);
+    bindSafe('include_response_body', 'onchange', captureResponseBodyCheckbox);
+    bindSafe('optimize_response_cookies', 'onchange', optimizeResponseCookiesCheckbox);
+    bindSafe('filter_web_events', 'oninput', filterEvents);
+    bindSafe('web_event_filter_key', 'oninput', filterEvents);
+    bindSafe('clear_filter_web_events', 'onclick', clearFilterBoxDisplayAllURLsAndUpdateButtons);
+    bindSafe('delete_all_filtered_web_events', 'onclick', deleteFilteredEvents);
+    bindSafe('delete_selected_web_event', 'onclick', removeSelectedEvent);
+    bindSafe('delete_all_web_events', 'onclick', clearAllEvents);
+    bindSafe('urls_list', 'onclick', setEventRowAsSelected);
+    bindSafe('urls_list', 'onkeydown', updateSelectedEventToContainer);
+    bindSafe('toggle_track_web_events', 'onclick', updateToggleCaptureEvents);
+    bindSafe('header_button_remove_0', 'onclick', clearAndRemoveHeaderContents);
+    bindSafe('header_button_add_0', 'onclick', addNewHeaderContainer);
+    bindSafe('add_modify_headers', 'oninput', generateHeadersToAddOrModify); // either on text change
+    bindSafe('find_in_details_pattern', 'oninput', setFindPatterns);
+    bindSafe('delete_cookies_button', 'onclick', deleteCookiesForSelectedDomain);
+
+    bindSafe('preferences', 'click_listener', function () {
       openAddonOptions();
     });
   }
