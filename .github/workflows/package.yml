@@ -1,0 +1,54 @@
+name: Package Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create Zip for Web Store
+        run: zip -r http-tracker-plus-store.zip . -x "*.git*" -x "*.github*" -x "*.DS_Store*"
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install CRX Packer
+        run: npm install -g crx
+
+      - name: Configure Private Key
+        run: |
+          if [ -n "${{ secrets.CRX_PRIVATE_KEY }}" ]; then
+            echo "${{ secrets.CRX_PRIVATE_KEY }}" > private.pem
+            echo "Using provided private key."
+          else
+            openssl genrsa -out private.pem 2048
+            echo "Generated temporary private key."
+          fi
+
+      - name: Pack CRX
+        run: crx pack ./ -o http-tracker-plus.crx -p private.pem
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: http-tracker-plus-builds
+          path: |
+            http-tracker-plus-store.zip
+            http-tracker-plus.crx
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            http-tracker-plus-store.zip
+            http-tracker-plus.crx
