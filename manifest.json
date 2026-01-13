@@ -3,7 +3,7 @@
   "background": {
     "service_worker": "src/js/httpTrackerServiceWorker.js"
   },
-  "description": "Fork of original HTTP-TRACKER. Inspect HTTP request headers, cookies, data, Response Headers, Body, cookies and add/modify request headers before sending requests",
+  "description": "Inspect and modify HTTP requests and responses, including headers, cookies, and body. Fork of the original HTTP-TRACKER.",
   "manifest_version": 3,
   "name": "HTTP TRACKER PLUS",
   "permissions": [
@@ -22,10 +22,12 @@
   "version": "3.0.0",
   "action": {
     "default_icon": {
-      "16": "/src/assets/icon_320px.png",
-      "32": "/src/assets/icon_320px.png"
+      "16": "src/assets/icon_128px.png",
+      "32": "src/assets/icon_128px.png",
+      "48": "src/assets/icon_128px.png",
+      "128": "src/assets/icon_128px.png"
     },
-    "default_title": "HTTP TRACKER PLUS : Inspect HTTP request headers, cookies, data, Response Headers, Body, cookies and add/modify request headers before sending requests"
+    "default_title": "HTTP TRACKER PLUS : Inspect and modify HTTP requests and responses (headers, cookies, body)."
   },
   "commands": {
     "_execute_action": {
@@ -40,6 +42,10 @@
     "open_in_tab": true
   },
   "icons": {
-    "320": "/src/assets/icon_320px.png"
+    "16": "src/assets/icon_128px.png",
+    "32": "src/assets/icon_128px.png",
+    "48": "src/assets/icon_128px.png",
+    "128": "src/assets/icon_128px.png",
+    "320": "src/assets/icon_320px.png"
   }
 }
